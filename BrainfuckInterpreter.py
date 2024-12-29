@@ -57,3 +57,44 @@ code = "++++[>++++[>++++<-]<-]>>-----.>---.+++++++..+++."
 interpreter = BrainfuckInterpreter(code)
 output = interpreter.run()
 print(output)
+
+#Scripting language black magaic
+
+def unicode_string_to_brainfuck(unicode_string):
+    """
+    Convert a Unicode string to Brainfuck code that outputs the string.
+    """
+    brainfuck_code = []
+    for char in unicode_string:
+        code_point = ord(char)
+        brainfuck_code.append(generate_bf_for_code_point(code_point))
+        brainfuck_code.append('.')
+        brainfuck_code.append('>')
+
+    return ''.join(brainfuck_code)
+
+
+def generate_bf_for_code_point(code_point):
+    """
+    Generate Brainfuck code to set the current memory cell to the given Unicode code point.
+    This implementation chooses a simple approach of incrementing the cell value.
+    """
+    # Choose an initial value and increment steps
+    increments = code_point // 10
+    remainder = code_point % 10
+
+    bf_code = ['+'] * increments
+    bf_code.append('[>++++++++++<-]>')  # Set memory cell to 10 * increments
+    bf_code.extend(['+'] * remainder)   # Add the remainder
+
+    return ''.join(bf_code)
+
+# Example usage
+unicode_string = "Hello, 世界!"
+bf_code = unicode_string_to_brainfuck(unicode_string)
+print(bf_code)
+
+# Now, let's create a Brainfuck interpreter and run the generated code
+interpreter = BrainfuckInterpreter(bf_code)
+output = interpreter.run()
+print(output)  # Should print "Hello, 世界!"
